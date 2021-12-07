@@ -18,7 +18,7 @@ public class ArticleController {
 		lastArticleId = 0;
 		articles = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
-			add("제목" + (i + 1), "내용" + (i + 1));
+			add(1 % 2 == 0 ? 1 : 2, "제목" + (i + 1), "내용" + (i + 1));
 		}
 	}
 
@@ -31,14 +31,14 @@ public class ArticleController {
 		return articles.get(index);
 	}
 
-	private int add(String title, String body) {
+	private int add(int memberId, String title, String body) {
 		Article article = new Article();
+		
 		article.id = lastArticleId + 1;
+		article.memberId = memberId;
 		article.title = title;
 		article.body = body;
-
 		articles.add(article);
-
 		lastArticleId = article.id;
 
 		return article.id;
@@ -86,7 +86,7 @@ public class ArticleController {
 			System.out.print("내용 :");
 			body = scan.nextLine();
 
-			int id = add(title, body);
+			int id = add(Container.session.loginedMemberId, title, body);
 
 			System.out.printf("%d번 게시무링 생성되었습니다.\n", id);
 		} else if (command.startsWith("article search ")) {
@@ -136,7 +136,7 @@ public class ArticleController {
 				System.out.println("게시물이 존재하지 않습니다.");
 				return;
 			}
-			System.out.println("번호 / 제목");
+			System.out.println("번호 /작성자 /제목");
 			int itemsInAPage = 10;
 			int startPos = articles.size() - 1;
 			startPos -= (page - 1) * itemsInAPage;
@@ -150,7 +150,7 @@ public class ArticleController {
 			}
 			for (int i = startPos; i >= endPos; i--) {
 				Article article = articles.get(i);
-				System.out.printf("%d / %s\n", article.id, article.title);
+				System.out.printf("%d / %s / %s\n", article.id,article.memberId, article.title);
 			}
 		} else if (command.startsWith("article detail ")) {
 			int inputedId = 0;
