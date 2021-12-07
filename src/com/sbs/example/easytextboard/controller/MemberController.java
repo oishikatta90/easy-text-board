@@ -63,6 +63,14 @@ public class MemberController extends Controller {
 	}
 
 	public void run(Scanner sc, String command) {
+		if (command.equals("member whoami")) {
+			if (Container.session.isLogout()) {
+				System.out.println("로그아웃 상태입니다.");
+				return;
+			}
+			int loginedMemberId = Container.session.loginedMemberId;
+			System.out.printf("당신의 회원 번호는 %d번 입니다.\n", loginedMemberId);
+		}
 		if (command.equals("member login")) {
 			System.out.println("== 로그인 ==");
 
