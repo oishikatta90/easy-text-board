@@ -1,67 +1,19 @@
 package com.sbs.example.easytextboard.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import com.sbs.example.easytextboard.container.Container;
 import com.sbs.example.easytextboard.dto.Member;
+import com.sbs.example.easytextboard.service.MemberService;
 
 public class MemberController extends Controller {
-
-	private List<Member> members;
-	private int lastMemberId;
-
+	private MemberService memberService;
+	
 	public MemberController() {
-		lastMemberId = 0;
-		members = new ArrayList<>();
-
-		for (int i = 1; i <= 3; i++) {
-			join("user" + i, "user" + i, "유저" + i);
-		}
+		memberService = Container.memberService;
+		
 	}
-
-	private Member getMemberByLoginId(String loginId) {
-		for (Member member : members) {
-			if (member.loginId.equals(loginId)) {
-				return member;
-			}
-		}
-
-		return null;
-	}
-
-	private int join(String loginId, String loginPw, String name) {
-		Member member = new Member();
-		member.id = lastMemberId + 1;
-		member.loginId = loginId;
-		member.loginPw = loginPw;
-		member.name = name;
-		members.add(member);
-		lastMemberId = member.id;
-		return member.id;
-	}
-
-	private boolean isExistsLoginId(String loginId) {
-		for (Member member : members) {
-			if (member.loginId.equals(loginId)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean isJoinAvailabelLoginId(String loginId) {
-
-		for (Member member : members) {
-			if (member.loginId.equals(loginId)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
+	
 	public void run(Scanner sc, String command) {
 		if (command.equals("member whoami")) {
 			if (Container.session.isLogout()) {
@@ -102,7 +54,7 @@ public class MemberController extends Controller {
 					continue;
 				}
 
-				member = getMemberByLoginId(loginId);
+				member = memberService.getMemberByLoginId(loginId);
 
 				if (member == null) {
 					loginIdCount++;
@@ -173,7 +125,7 @@ public class MemberController extends Controller {
 				if (loginId.length() == 0) {
 					loginIdCount++;
 					continue;
-				} else if (isJoinAvailabelLoginId(loginId) == false) {
+				} else if (memberService.isJoinAvailabelLoginId(loginId) == false) {
 					loginIdCount++;
 					System.out.printf("%s(은)는 이미 사용중이 로그인아이디 입니다.\n", loginId);
 					continue;
@@ -200,7 +152,7 @@ public class MemberController extends Controller {
 				}
 				break;
 			}
-			int id = join(loginId, loginPw, name);
+			int id = memberService.join(loginId, loginPw, name);
 			System.out.printf("%d번 회원이 생성되었습니다.\n", id);
 		}
 	}
