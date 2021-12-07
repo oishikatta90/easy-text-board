@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.sbs.example.easytextboard.container.Container;
 import com.sbs.example.easytextboard.controller.MemberController;
 import com.sbs.example.easytextboard.dto.Article;
 import com.sbs.example.easytextboard.dto.Member;
@@ -71,6 +72,11 @@ public class ArticleController {
 
 		if (command.equals("article add")) {
 			System.out.println("==게시물 등록==");
+
+			if (Container.session.isLogout()) {
+				System.out.println("로그인 후 이용해주세요");
+				return;
+			}
 
 			String title;
 			String body;
@@ -216,8 +222,12 @@ public class ArticleController {
 			System.out.printf("번호 : %d 제목: %s 내용: %s\n", article.id, article.title, article.body);
 
 		} else if (command.startsWith("article delete")) {
-			int inputedId = Integer.parseInt(command.split(" ")[2]);
 			System.out.println("==게시물 삭제==");
+			if (Container.session.isLogout()) {
+				System.out.println("로그인 후 이용해주세요");
+				return;
+			}
+			int inputedId = Integer.parseInt(command.split(" ")[2]);
 
 			Article article = getArticle(inputedId);
 
@@ -230,8 +240,12 @@ public class ArticleController {
 
 			System.out.printf("%d번 게시물이 삭제되었습니다.\n", inputedId);
 		} else if (command.startsWith("article modify")) {
-			int inputedId = Integer.parseInt(command.split(" ")[2]);
+			if (Container.session.isLogout()) {
+				System.out.println("로그인 후 이용해주세요");
+				return;
+			}
 			System.out.println("==게시물 수정==");
+			int inputedId = Integer.parseInt(command.split(" ")[2]);
 
 			Article article = getArticle(inputedId);
 
